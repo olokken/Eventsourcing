@@ -4,7 +4,7 @@ import "eventsourcing/application"
 
 type User struct {
 	application.Aggregate
-	UserId      string
+	ObjectId    string
 	Name        string
 	Email       string
 	PhoneNumber string

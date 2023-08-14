@@ -1,6 +1,11 @@
 package user
 
-import "eventsourcing/application"
+import (
+	"eventsourcing/application"
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson"
+)
 
 //Applies the event to the user object
 
@@ -11,7 +16,7 @@ type IUserEvent interface {
 
 type UserCreated struct {
 	application.Event
-	UserId      string
+	ObjectId    string
 	Name        string
 	Email       string
 	PhoneNumber string
@@ -20,7 +25,7 @@ type UserCreated struct {
 func (e UserCreated) IsEvent() {}
 
 func (e UserCreated) Apply(u *User) {
-	u.UserId = e.UserId
+	u.ObjectId = e.ObjectId
 	u.Name = e.Name
 	u.Email = e.Email
 	u.PhoneNumber = e.PhoneNumber
@@ -28,11 +33,37 @@ func (e UserCreated) Apply(u *User) {
 
 type NameChanged struct {
 	application.Event
-	name string
+	Name     string
+	ObjectId string
 }
 
-func (e NameChanged) isEvent() {}
+func (e NameChanged) IsEvent() {}
 
 func (e NameChanged) Apply(u *User) {
-	u.Name = e.name
+	u.Name = e.Name
+}
+
+func CreateEventFromBson(data bson.M) IUserEvent {
+	event := data["event"].(bson.M)
+	eventType := event["eventtype"].(int32)
+	fmt.Print("Vamos")
+
+	bsonBytes, err := bson.Marshal(data)
+
+	if err != nil {
+		fmt.Errorf("Failed in CreateEventFromBson")
+	}
+
+	switch eventType {
+	case 0:
+		var event UserCreated
+		bson.Unmarshal(bsonBytes, &event)
+		return event
+	case 1:
+		var event NameChanged
+		bson.Unmarshal(bsonBytes, &event)
+		return event
+	default:
+		return nil
+	}
 }

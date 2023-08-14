@@ -1,7 +1,9 @@
 package user
 
+import "eventsourcing/repository"
+
 type CommandHandler struct {
-	Repository string
+	Repository repository.IEventRepository
 }
 
 func (ch *CommandHandler) HandleCommand(c IUserCommand) {

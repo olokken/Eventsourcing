@@ -1,14 +1,19 @@
 package application
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type IEvent interface {
 	IsEvent()
 }
 
 type Event struct {
-	_id           string
+	EventId       string
 	AggregateType AggregateType
+	EventType     EventType
 	Version       int
 	Timestamp     time.Time
 }
@@ -22,10 +27,19 @@ const (
 	Fine
 )
 
-func CreateEvent(aggregateType AggregateType, version int) Event {
+type EventType int
+
+const (
+	UserCreated EventType = iota
+	NameChanged
+)
+
+func CreateEvent(aggregateType AggregateType, eventType EventType, version int) Event {
 	return Event{
+		EventId:       uuid.New().String(),
 		AggregateType: aggregateType,
 		Timestamp:     time.Now(),
 		Version:       version,
+		EventType:     eventType,
 	}
 }

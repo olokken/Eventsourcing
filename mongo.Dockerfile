@@ -8,8 +8,8 @@ WORKDIR /data
 EXPOSE 27017
 
 # Set the environment variables
-ENV MONGO_INITDB_ROOT_USERNAME=<username>
-ENV MONGO_INITDB_ROOT_PASSWORD=<password>
+#ENV MONGO_INITDB_ROOT_USERNAME=<username>
+#ENV MONGO_INITDB_ROOT_PASSWORD=<password>
 
 # Start MongoDB with the default settings
 CMD ["mongod"]
